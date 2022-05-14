@@ -9,24 +9,23 @@ export default function Lobby({
 }) {
 
 
-useEffect(()=>{
+// useEffect(()=>{
 
-  fetch("http://127.0.0.1:4000/checkers/api/v1/security/tokenInformation",{
-    method:'GET',
-    credentials:"omit"
-  })
-  .then(response=>{
-    console.log(response);
-    return response.json();
-  })
-  .then(answer=>{
-    console.log(answer+" Hello from the ");
-  })
-  .catch(error=>{
-    console.log(error);
-  })
+//   fetch("http://127.0.0.1:4000/checkers/api/v1/security/tokenInformation",{
+//     method:'GET',
+//   })
+//   .then(response=>{
+//     console.log(response);
+//     return response.json();
+//   })
+//   .then(answer=>{
+//     console.log(answer+" Hello from the ");
+//   })
+//   .catch(error=>{
+//     console.log(error);
+//   })
 
-},[])
+// },[])
 
   return (
     <div className="lobby">
@@ -50,7 +49,7 @@ useEffect(()=>{
               <td>{game.numberOfPlayers} / 2</td>
               <td>
                 <Button
-                  onClick={() => joinGame(game.id)}
+                  onClick={() => joinGame(game.id,"pkath@gmu.edu")}
                   variant="link">
                   Join Game
                 </Button>

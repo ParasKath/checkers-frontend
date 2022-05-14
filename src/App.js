@@ -17,23 +17,26 @@ const App= ()=>
 
   const [pagetype,SetPagetype]= useState("loginpage") 
 
+  const [loginStatus,setLoginStatus] = useState(false);
+
+  const [emailId,SetEmailId] = useState('');
   const loginpage ='loginpage';
-  const SignUpPage='signupPage';
+  const SignupPage='signupPage';
   const lobby= 'lobby';
 
-  //console.log(cookies)
+  //
 
 
   useEffect(()=>{
-  
-  
-
+    console.log(cookies['token'])
 
   },[]);
 
   return (
     <div>
-      <Controller/>
+      {loginStatus === false && pagetype === loginpage && <LoginPage changePageType = {SetPagetype} setEmailId={SetEmailId} LoginStatus = {setLoginStatus}/>}
+      {loginStatus === false && pagetype === SignupPage && <SignUpPage changePageType = {SetPagetype} />}
+      {loginStatus === true  && pagetype === lobby &&  <Controller  emailid={emailId} changePageType = {SetPagetype} LoginStatus = {setLoginStatus} />}
     </div>
   );
 }

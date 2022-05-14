@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import LoginandSignInTemplate from '../../Util/LoginAndSignInTemplate';
+import { useCookies } from 'react-cookie';
 
 const LoginPage = (props) => {
 
@@ -15,7 +16,8 @@ const LoginPage = (props) => {
     const [successmessage,Setsuccessmessage]= useState(false);
     const [submissionerror,Setsubmissionerror] = useState(false);
     const [submissionmessage,Setsubmissionmessage] = useState('');
-  
+    
+    const [cookies, setCookie] = useCookies();
 
 
 
@@ -50,6 +52,10 @@ const LoginPage = (props) => {
 
     }
 
+    const SingUpHandler = ()=>{
+        props.changePageType('signupPage');
+    }
+
     const FormHandler = (event) => {
         event.preventDefault();
 
@@ -67,6 +73,7 @@ const LoginPage = (props) => {
                 body: JSON.stringify(data)
             };
 
+
             fetch('http://127.0.0.1:4000/checkers/api/v1/user/login', requestOptions)
                 .then((response) => {
                     return response.json()
@@ -75,9 +82,15 @@ const LoginPage = (props) => {
                     let statuscode = answer.responseCode;
                     let message = answer.statusMessage;
 
+                    console.log();
                     if (statuscode === 200) {
                         if (message === 'Success') {
+                            setCookie('token',answer.response.result.token,{path:'/'});
                             Setsuccessmessage(true);
+                            props.setEmailId(answer.response.result.email);
+                            props.changePageType('lobby');
+                            props.LoginStatus(true);
+                        
                         }
                     }
                     else if (statuscode === 401) {
@@ -121,7 +134,7 @@ const LoginPage = (props) => {
                     </div>
                 </div>
                 <div className="d-grid">
-                    <button className="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2" type="submit">Sign in</button>
+                    <button className="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2" type="button" onClick={SingUpHandler}>Sign in</button>
                     <div className="text-center">
                     </div>
                 </div>

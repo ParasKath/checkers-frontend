@@ -18,7 +18,7 @@ const PAGE_CREATE_NEW_GAME = 'CreateNewGame';
 const PAGE_JOIN_GAME= 'JoinGame';
 
 
-const  Controller =()=> {
+const  Controller =(props)=> {
   const [page, setPage] = useState('Lobby');
   const [games, setGames] = useState([]);
   const [color, setColor] = useState('');
@@ -29,13 +29,13 @@ const  Controller =()=> {
   const [modalTitle, setModalTitle] = useState('');
   const [modalText, setModalText] = useState('');
 
-  const joinGame = (gameId) => {
-    console.log(game);
+  const joinGame = (gameId,email) => {
+    console.log(games);
     games.forEach(game => {
       game.id= game.id.toString();
       if(game.id === gameId) {    
         if(game.numberOfPlayers < 2) {
-          socket.emit('join-game', gameId);
+          socket.emit('join-game', gameId,props.emailid);
           setPage(PAGE_GAME);
           setGameId(gameId);
         } else 
@@ -74,17 +74,17 @@ const  Controller =()=> {
 
   const createGame = (name) => {
     
-    socket.emit('create-game', name);
+    socket.emit('create-game', name,props.emailid);
     setPage(PAGE_GAME);
-    console.log(games);
   };
 
   const sendChat = (message) => {
     socket.emit('chat-message', message);
   };
 
+
   useEffect(() => {
-    const url  ="http://localhost:4000";
+    const url  ="http://127.0.0.1:4000";
     const newSocket = io(url, {
       transports: ['websocket'],
       rejectUnauthorized: false
@@ -104,13 +104,18 @@ const  Controller =()=> {
       setGameId(gameId);
     });
     newSocket.on('color', (color) => setColor(color));
+
     newSocket.on('end-game', () => {
+      
       setGameId(null);
       setColor('');
       setPage(PAGE_LOBBY);
       setShowModal(true);
       setModalText('Your opponent has left the game');
       setModalTitle('Game Over');
+      console.log("Hello from we have to hit at the backend from here end game");
+      
+      
     });
     newSocket.on('winner', (winner) => {
       alert(`${winner} has won the game!`);
@@ -155,7 +160,7 @@ const  Controller =()=> {
 
   return (
     <React.Fragment>
-      <NavBar setPage={setPage} data={data}/>)
+      <NavBar setPage={setPage} data={data}/>
       <Container>
         <Row>
           <Col>

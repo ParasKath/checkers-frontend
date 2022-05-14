@@ -7,6 +7,17 @@ export default function CreateNewGame({ createGame }) {
   const emailRegex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
 
   const [name, setName] = useState('');
+
+  const gameCodeHandler= (event)=>{
+
+    const enteredEmail = event.target.value;
+
+        if (enteredEmail.includes('@') === true) {
+            if (emailRegex.test(enteredEmail) === true) {
+                setName(enteredEmail);
+            }
+        }
+  }
   const FormHandler= (event)=>{
     event.preventDefault();
 
@@ -37,6 +48,7 @@ export default function CreateNewGame({ createGame }) {
     }
   })
   .catch(err=>{
+    console.log("While enbtering code");
   })
 
     
@@ -53,8 +65,7 @@ export default function CreateNewGame({ createGame }) {
           <Form.Control
             autoFocus
             type="text"
-            value={name}
-            onChange={({ target }) => setName(target.value)}
+            onChange={gameCodeHandler}
           />
         </Form.Group>
 

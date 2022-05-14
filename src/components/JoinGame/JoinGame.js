@@ -9,7 +9,7 @@ export default function JoinGame({ joingame })
 
   const FormHandler= (event)=>{
     event.preventDefault();
-    joingame(gameid);
+    joingame(gameid,"pkath@gmu.edu");
   }
 
   const inputHandler = (event)=>{

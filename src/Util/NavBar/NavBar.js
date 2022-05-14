@@ -10,7 +10,7 @@ const NavBar = (props)=>{
                     {item.title}
                 </Nav.Link>
         )
-    })
+    });
 
     return(
         <Navbar className="mb-4" bg="dark" variant="dark">
@@ -20,8 +20,8 @@ const NavBar = (props)=>{
         <Nav className="mr-auto">
           {nav}
         </Nav>
-      </Navbar>
-    )
+      </Navbar>)
+    
 }
 
 export default NavBar;

@@ -25,6 +25,11 @@ const SignUpPage = (props) => {
     }
   }
 
+  const LoginButtonHandler = ()=>{
+
+    props.changePageType('loginpage');
+  }
+
   const FormHandler = (event) => {
     event.preventDefault();
     
@@ -58,7 +63,8 @@ const SignUpPage = (props) => {
       {
         if(message==='Success')
         {
-          Setsuccessmessage(true);
+          // Setsuccessmessage(true);
+          props.changePageType('loginpage');
         }
       }
       else if(statuscode===401)
@@ -163,7 +169,13 @@ const SignUpPage = (props) => {
         <div className="d-grid">
           <button className="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2" type="submit">Sign in</button>
           <div className="text-center">
-          </div>
+        </div>
+        </div>
+          
+        <div className="d-grid">
+          <button className="btn btn-lg btn-primary btn-login text-uppercase fw-bold mb-2" type="button" onClick={LoginButtonHandler}>Login In</button>
+          <div className="text-center">
+        </div> 
         </div>
         {submissionerror && <label className='error'>{submissionmessage}</label>}
         {successmessage && <label className='success'>Thanks for Signup</label>}
