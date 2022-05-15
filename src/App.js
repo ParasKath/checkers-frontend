@@ -9,34 +9,76 @@ import './App.css';
 const App= ()=> 
 {
 
-  const [isLogeedIn,SetLoggedInStatus]= useState(false); 
-
-  const [csrftoken,Setcsrftoken] = useState("");
-
-  const [cookies, setCookie] = useCookies();
+  const [cookies, setCookie,removeCookie] = useCookies();
 
   const [pagetype,SetPagetype]= useState("loginpage") 
 
   const [loginStatus,setLoginStatus] = useState(false);
 
-  const [emailId,SetEmailId] = useState('');
+  const [data,setData] = useState([]);
+ 
+
   const loginpage ='loginpage';
   const SignupPage='signupPage';
   const lobby= 'lobby';
 
-  //
-
-
+  
   useEffect(()=>{
-    console.log(cookies['token'])
-
+    const data = {
+      token:cookies['token'],
+  }
+  const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+  };
+    
+    fetch("https://backend-checkers.herokuapp.com/checkers/api/v1/user/GetData",requestOptions)
+    .then(response=>response.json())
+    .then(answer=>{
+      let responsecode = answer.responseCode;
+      let statusMessage = answer.statusMessage;
+      if(responsecode === 200)
+      {
+        if(statusMessage === 'Success')
+        {
+          console.log(answer);
+          let temp = [];
+          temp.push(answer.response.email);
+          temp.push(answer.response.betAmount);
+          temp.push(answer.response.win);
+          temp.push(answer.response.lost);
+          temp.push(answer.response.gamesplayed);
+        
+          setData(temp);
+          setLoginStatus(true);
+          SetPagetype('lobby');
+          
+        }
+      else
+        {
+          setLoginStatus(false);
+          SetPagetype('loginpage'); 
+        }
+    }
+    })
+    .catch(error=>{
+      setLoginStatus(false);
+      SetPagetype('loginpage');
+    })
   },[]);
+
+  const LogoutHandler=()=>{
+    removeCookie("token");
+    setLoginStatus(false);
+    SetPagetype('loginpage'); 
+  }
 
   return (
     <div>
-      {loginStatus === false && pagetype === loginpage && <LoginPage changePageType = {SetPagetype} setEmailId={SetEmailId} LoginStatus = {setLoginStatus}/>}
+      {loginStatus === false && pagetype === loginpage && <LoginPage changePageType = {SetPagetype}  LoginStatus = {setLoginStatus}/>}
       {loginStatus === false && pagetype === SignupPage && <SignUpPage changePageType = {SetPagetype} />}
-      {loginStatus === true  && pagetype === lobby &&  <Controller  emailid={emailId} changePageType = {SetPagetype} LoginStatus = {setLoginStatus} />}
+      {loginStatus === true  && pagetype === lobby &&  <Controller logout={LogoutHandler}  data={data} changePageType = {SetPagetype} LoginStatus = {setLoginStatus} />}
     </div>
   );
 }

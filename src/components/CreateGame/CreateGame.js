@@ -1,10 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
 export default function CreateNewGame({ createGame }) {
 
   const emailRegex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}');
+  const [csrftoken,SetcsrfToken] = useState('');
+
+  useEffect(()=>{
+
+    fetch("https://backend-checkers.herokuapp.com/checkers/api/v1/user/getCsrf")
+    .then(response=>response.json())
+    .then(answer=>{
+      let responsecode = answer.responseCode;
+      let statusMessage = answer.statusMessage;
+      if(responsecode === 200)
+      {
+        if(statusMessage === 'Success')
+        {
+          SetcsrfToken(answer.response.csrf);
+        }
+    }
+    })
+    .catch(error=>{
+
+    }) 
+
+ },[])
+
 
   const [name, setName] = useState('');
 
@@ -21,8 +44,11 @@ export default function CreateNewGame({ createGame }) {
   const FormHandler= (event)=>{
     event.preventDefault();
 
+    console.log(event.target[1].value);
+
     const data={
-      email:name
+      email:name,
+      _csrf:event.target[1].value
     }
     const requestOptions = {
       method: 'POST',
@@ -30,7 +56,7 @@ export default function CreateNewGame({ createGame }) {
       body: JSON.stringify(data)
   };
 
-  fetch('http://127.0.0.1:4000/checkers/api/v1/user/CreateGame', requestOptions)
+  fetch('https://backend-checkers.herokuapp.com/checkers/api/v1/user/CreateGame', requestOptions)
   .then((response) =>{
     return response.json()
   })
@@ -68,6 +94,7 @@ export default function CreateNewGame({ createGame }) {
             onChange={gameCodeHandler}
           />
         </Form.Group>
+        <Form.Control type='hidden' name = "_csrftoken"  value={csrftoken}></Form.Control>
 
         <Button
           variant="primary"

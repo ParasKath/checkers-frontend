@@ -11,6 +11,7 @@ import Col from 'react-bootstrap/Col';
 import Mode from '../Modal/Modal';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar from '../../Util/NavBar/NavBar';
+import Table from 'react-bootstrap/Table';
 
 const PAGE_GAME = 'Game';
 const PAGE_LOBBY = 'Lobby';
@@ -30,12 +31,11 @@ const  Controller =(props)=> {
   const [modalText, setModalText] = useState('');
 
   const joinGame = (gameId,email) => {
-    console.log(games);
     games.forEach(game => {
       game.id= game.id.toString();
       if(game.id === gameId) {    
         if(game.numberOfPlayers < 2) {
-          socket.emit('join-game', gameId,props.emailid);
+          socket.emit('join-game', gameId,props.data[0]);
           setPage(PAGE_GAME);
           setGameId(gameId);
         } else 
@@ -74,7 +74,7 @@ const  Controller =(props)=> {
 
   const createGame = (name) => {
     
-    socket.emit('create-game', name,props.emailid);
+    socket.emit('create-game', name,props.data[0]);
     setPage(PAGE_GAME);
   };
 
@@ -84,7 +84,7 @@ const  Controller =(props)=> {
 
 
   useEffect(() => {
-    const url  ="http://127.0.0.1:4000";
+    const url  ="https://backend-checkers.herokuapp.com";
     const newSocket = io(url, {
       transports: ['websocket'],
       rejectUnauthorized: false
@@ -111,14 +111,14 @@ const  Controller =(props)=> {
       setColor('');
       setPage(PAGE_LOBBY);
       setShowModal(true);
-      setModalText('Your opponent has left the game');
+      setModalText('Your opponent has left the game So you Win');
       setModalTitle('Game Over');
-      console.log("Hello from we have to hit at the backend from here end game");
-      
       
     });
     newSocket.on('winner', (winner) => {
-      alert(`${winner} has won the game!`);
+      setShowModal(true);
+      setModalText(`${winner} has won the game!`);
+      setModalTitle('Game Over');
     });
     setSocket(newSocket);
   }, []);
@@ -135,18 +135,13 @@ const  Controller =(props)=> {
     {title:"Join Game",
      pagetype:"JoinGame"
     },
-    {title:"Logout",
-     pagetype:"Lobby"
-    }
+    
   ]
 
   const GamePage= [
     {title:"Lobby",
      pagetype:"Lobby"
     },
-    {title:"Logout",
-     pagetype:"JoinGame"
-    }
   ]
 
   let data=Mainpage;
@@ -160,16 +155,33 @@ const  Controller =(props)=> {
 
   return (
     <React.Fragment>
-      <NavBar setPage={setPage} data={data}/>
+      <NavBar setPage={setPage} logoutHandler={props.logout} data={data}/>
       <Container>
         <Row>
           <Col>
           {page === PAGE_LOBBY && (
-              <Lobby
-                games={games}
-                setPage={setPage}
-                joinGame={joinGame}
-              />
+              <div className="lobby">
+      <Table striped bordered>
+        <thead>
+          <tr>
+            <th>EmailId</th>
+            <th>Total Amount</th>
+            <th>Win</th>
+            <th>Lost</th>
+            <th>Number of Players</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+          <td>{props.data[0]}</td>
+          <td>{props.data[1]}</td>
+          <td>{props.data[2]}</td>
+          <td>{props.data[3]}</td>
+          <td>{props.data[4]}</td>
+          </tr>
+        </tbody>
+      </Table>
+    </div>
             )}
             {page === PAGE_CREATE_NEW_GAME && (
               <CreateNewGame createGame={createGame} />

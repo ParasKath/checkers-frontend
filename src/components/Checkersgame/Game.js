@@ -95,35 +95,18 @@ export default function Game({
     );
   };
 
-  const renderChat = () => {
+  const renderBatting = () => {
     return (
       <div>
         <h2>Betting Amount</h2>
-        <label>Player 1 = 50 points</label>
+        <label>Player 1 = 50 points </label>
         <label>Player 2 = 50 points</label>
         <h2>People Can talk here</h2>
         {game.chat &&
           game.chat.map((message, idx) => (
             <div key={idx}>{message}</div>
           ))}
-        <div className="chat-input-wrapper">
-          <Form.Control
-            type="text"
-            value={chatText}
-            onChange={(e) => setChatText(e.target.value)}
-            placeholder="Enter your chat here"
-          />
-          <Button
-            className="chat-button"
-            variant="primary"
-            onClick={() => {
-              console.log(game);
-              sendChat(chatText, game.turn); // TODO: replace turn with player name from session data
-              setChatText('');
-            }}>
-            Send
-          </Button>
-        </div>
+
       </div>
     );
   };
@@ -134,7 +117,7 @@ export default function Game({
     return (
       <Col>
         <div className="text-center">
-          <h2 className="mb-4">{game.name}</h2>
+          <h2 className="mb-4">Let the Other Player Join</h2>
           <div className="mb-4">
             <Spinner animation="border" role="status" />
           </div>
@@ -157,7 +140,7 @@ export default function Game({
           )}
           {renderBoard()}
         </Col>
-        <Col>{renderChat()}</Col> 
+        <Col>{renderBatting()}</Col> 
         
         
       </>

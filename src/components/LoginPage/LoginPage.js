@@ -4,6 +4,9 @@ import { useCookies } from 'react-cookie';
 
 const LoginPage = (props) => {
 
+    
+    
+    
     const emailRegex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}')
     const passwordRegex = new RegExp("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$");
 
@@ -74,7 +77,7 @@ const LoginPage = (props) => {
             };
 
 
-            fetch('http://127.0.0.1:4000/checkers/api/v1/user/login', requestOptions)
+            fetch('https://backend-checkers.herokuapp.com/checkers/api/v1/user/login', requestOptions)
                 .then((response) => {
                     return response.json()
                 })
@@ -87,7 +90,6 @@ const LoginPage = (props) => {
                         if (message === 'Success') {
                             setCookie('token',answer.response.result.token,{path:'/'});
                             Setsuccessmessage(true);
-                            props.setEmailId(answer.response.result.email);
                             props.changePageType('lobby');
                             props.LoginStatus(true);
                         

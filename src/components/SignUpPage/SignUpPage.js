@@ -50,7 +50,7 @@ const SignUpPage = (props) => {
         body: JSON.stringify(data)
     };
   
-    fetch('http://127.0.0.1:4000/checkers/api/v1/user/signUp', requestOptions)
+    fetch('https://backend-checkers.herokuapp.com/checkers/api/v1/user/signUp', requestOptions)
     .then((response) =>{
       return response.json()
     })
